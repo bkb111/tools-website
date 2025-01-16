@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6d93ff, #ff6d9c);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #fff;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .section-header {
+            font-size: 24px;
+            margin: 20px 0;
+            font-weight: 500;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input[type="date"] {
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.4);
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        input[type="date"]:focus {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-color: #ff6d9c;
+            outline: none;
+        }
+
+        button {
+            padding: 14px 24px;
+            background-color: #ff6d9c;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff3f61;
+            transform: scale(1.1);
+        }
+
+        .result-message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #fff;
+            display: none;
+        }
+
+        .result-section {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-section div {
+            font-size: 16px;
+            margin: 8px 0;
+            color: #fff;
+        }
+
+        .error-message {
+            color: #ff3f61;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .input-group label {
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: block;
+            color: #fff;
+        }
+
+        .section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            border-bottom: 2px solid #ff6d9c;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 25px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Age Calculator</h1>
+
+        <!-- Current Age Section -->
+        <div class="section">
+            <div class="section-header">Current Age</div>
+            <div class="input-group">
+                <label for="dob">Enter Your Birthdate:</label>
+                <input type="date" id="dob" name="dob">
+            </div>
+            <button onclick="calculateAge()">Calculate Age</button>
+            <div id="error" class="error-message"></div>
+            <div id="result" class="result-message"></div>
+            <div id="ageDetails" class="result-section">
+                <div id="years"></div>
+                <div id="months"></div>
+                <div id="days"></div>
+            </div>
+        </div>
+
+        <!-- Age on Reference Date Section -->
+        <div class="section">
+            <div class="section-header">Age on Reference Date</div>
+            <div class="input-group">
+                <label for="reference-date">Select Reference Date:</label>
+                <input type="date" id="reference-date" name="reference-date">
+            </div>
+            <button onclick="calculateAgeOnReferenceDate()">Calculate Age on Reference Date</button>
+            <div id="ageOnReferenceDate" class="result-message"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateAge() {
+            let dob = document.getElementById('dob').value;
+            let errorMessage = document.getElementById('error');
+            let resultMessage = document.getElementById('result');
+            let ageDetails = document.getElementById('ageDetails');
+            let years = document.getElementById('years');
+            let months = document.getElementById('months');
+            let days = document.getElementById('days');
+
+            errorMessage.style.display = 'none';
+            resultMessage.style.display = 'none';
+            ageDetails.style.display = 'none';
+
+            if (!dob) {
+                errorMessage.textContent = 'Please select a valid date of birth.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            let birthDate = new Date(dob);
+            let currentDate = new Date();
+
+            let ageInYears = currentDate.getFullYear() - birthDate.getFullYear();
+            let ageInMonths = currentDate.getMonth() - birthDate.getMonth();
+            let ageInDays = currentDate.getDate() - birthDate.getDate();
+
+            if (ageInDays < 0) {
+                ageInMonths--;
+                ageInDays += new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
+            }
+            if (ageInMonths < 0) {
+                ageInYears--;
+                ageInMonths += 12;
+            }
+
+            years.textContent = `Years: ${ageInYears}`;
+            months.textContent = `Months: ${ageInMonths}`;
+            days.textContent = `Days: ${ageInDays}`;
+
+            ageDetails.style.display = 'block';
+            resultMessage.textContent = `Your full age is ${ageInYears} years, ${ageInMonths} months, and ${ageInDays} days.`;
+            resultMessage.style.display = 'block';
+        }
+
+        function calculateAgeOnReferenceDate() {
+            let dob = document.getElementById('dob').value;
+            let referenceDate = document.getElementById('reference-date').value;
+            let ageOnReferenceDate = document.getElementById('ageOnReferenceDate');
+
+            if (!dob || !referenceDate) {
+                ageOnReferenceDate.textContent = 'Please select both the birthdate and the reference date.';
+                ageOnReferenceDate.style.display = 'block';
+                return;
+            }
+
+            let birthDate = new Date(dob);
+            let refDate = new Date(referenceDate);
+
+            let ageInYears = refDate.getFullYear() - birthDate.getFullYear();
+            let ageInMonths = refDate.getMonth() - birthDate.getMonth();
+            let ageInDays = refDate.getDate() - birthDate.getDate();
+
+            if (ageInDays < 0) {
+                ageInMonths--;
+                ageInDays += new Date(refDate.getFullYear(), refDate.getMonth(), 0).getDate();
+            }
+            if (ageInMonths < 0) {
+                ageInYears--;
+                ageInMonths += 12;
+            }
+
+            ageOnReferenceDate.textContent = `Your age on the selected reference date is ${ageInYears} years, ${ageInMonths} months, and ${ageInDays} days.`;
+            ageOnReferenceDate.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
